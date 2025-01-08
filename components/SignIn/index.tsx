@@ -7,15 +7,19 @@ export const SignIn = () => {
     return (
       <>
         Signed in as {session?.user?.name?.slice(0, 10)} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  } else {
-    return (
-      <>
-        Not signed in <br />
-        <button onClick={() => signIn()}>Sign in</button>
+        <button type="button" onClick={() => signOut()}>
+          Sign out
+        </button>
       </>
     );
   }
+
+  return (
+    <>
+      Not signed in <br />
+      <button type="button" onClick={() => signIn()}>
+        Sign in
+      </button>
+    </>
+  );
 };

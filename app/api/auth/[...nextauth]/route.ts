@@ -1,4 +1,6 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import { type MiniAppWalletAuthSuccessPayload, verifySiweMessage } from "@worldcoin/minikit-js";
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 
 const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -23,12 +25,46 @@ const authOptions: NextAuthOptions = {
         };
       },
     },
+
+    Credentials({
+      id: "siwe",
+      name: "Sign with Ethereum",
+      credentials: {},
+
+      async authorize(credentials, req) {
+        const {
+          nonce,
+          messageAddress,
+          messageSignature,
+          messageTime,
+          ...payload
+        } = req?.query as MiniAppWalletAuthSuccessPayload & {
+          nonce: string;
+          messageAddress: string;
+          messageSignature: string;
+          messageTime: string;
+        };
+
+        // https://docs.world.org/mini-apps/commands/wallet-auth#verifying-the-login
+        const res = await verifySiweMessage(payload, nonce)
+
+        if (res.isValid && res?.siweMessageData.address) {
+          return {
+            id: res.siweMessageData.address,
+          };
+        }
+
+        return null;
+      },
+    }),
   ],
+
   callbacks: {
     async signIn({ user }) {
       return true;
     },
   },
+
   debug: process.env.NODE_ENV === "development",
 };
 

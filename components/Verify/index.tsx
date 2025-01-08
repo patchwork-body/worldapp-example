@@ -2,9 +2,9 @@
 import {
   MiniKit,
   VerificationLevel,
-  ISuccessResult,
-  MiniAppVerifyActionErrorPayload,
-  IVerifyResponse,
+  type ISuccessResult,
+  type MiniAppVerifyActionErrorPayload,
+  type IVerifyResponse,
 } from "@worldcoin/minikit-js";
 import { useCallback, useState } from "react";
 
@@ -43,7 +43,7 @@ export const VerifyBlock = () => {
     }
 
     // Verify the proof in the backend
-    const verifyResponse = await fetch(`/api/verify`, {
+    const verifyResponse = await fetch('/api/verify', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export const VerifyBlock = () => {
   return (
     <div>
       <h1>Verify Block</h1>
-      <button className="bg-green-500 p-4" onClick={handleVerify}>
+      <button type="button" className="bg-green-500 p-4" onClick={handleVerify}>
         Test Verify
       </button>
       <span>{JSON.stringify(handleVerifyResponse, null, 2)}</span>
